@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<meta http-equiv="cleartype" content="on">
+
+	<meta name="HandheldFriendly" content="True">
+	<meta name="MobileOptimized" content="320">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link href="//cdn.kendostatic.com/2013.1.319/styles/kendo.common.min.css" rel="stylesheet">
+	<link href="//cdn.kendostatic.com/2013.1.319/styles/kendo.dataviz.min.css" rel="stylesheet">
+
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+	<script src="//cdn.kendostatic.com/2013.1.319/js/kendo.all.min.js"></script>
+
+	<style>
+		html,body {
+			margin: 0;
+			padding: 0;
+			height: 100%;
+		}
+
+		.chart-wrapper, .k-chart {
+			height: 100%;
+			width: 100%;
+		}
+
+	</style>
+
+</head>
+<body>
+	<div class="chart-wrapper">
+		<div id="stackedAreaChart"></div>
+	</div>
+	<script>
+		function createChart() {
+			$("#stackedAreaChart").kendoChart({
+				categoryAxis: {
+					axisCrossingValues: [0, 1000],
+					field: "label",
+					labels: {
+						step: 4,
+						visible: true,
+					},
+					majorGridLines: {
+                        visible: false
+                    },
+				},
+				chartArea: {
+					opacity: 0
+				},
+				dataSource: {
+					filter: [
+						{ field: "device", operator: "eq", value: "IE8" },
+						{ field: "slice", operator: "eq", value: "All" }
+					],
+					schema: {
+						model: {
+							fields: {
+								bytesHtml: { type: "number" },
+								bytesJS: { type: "number" },
+								bytesCSS: { type: "number" },
+								bytesGif: { type: "number" },
+								bytesJpg: { type: "number" },
+								bytesPng: { type: "number" },
+								bytesFont: { type: "number" },
+								bytesFlash: { type: "number" },
+								bytesOther: { type: "number" },
+								PageSpeed: { type: "number" }
+							}
+						}
+					},
+					sort: { dir: "asc", field: "label" },
+				    transport: {
+				        read: {
+				            url: "httparchive.json",
+				            dataType: "json"
+				        }
+				    }
+				},
+				legend: {
+					labels: {
+						color: "rgb(51, 51, 51)",
+					},
+					position: "bottom"
+				},
+				series: [
+					{ field: "bytesHtml", name: "HTML", stack: true, type: "area" },
+					{ field: "bytesJS", name: "Scripts", stack: true, type: "area" },
+					{ field: "bytesCSS", name: "CSS", stack: true, type: "area" },
+					{ field: "bytesGif", name: "GIFs", stack: true, type: "area" },
+					{ field: "bytesJpg", name: "JPEGs", stack: true, type: "area" },
+					{ field: "bytesPng", name: "PNGs", stack: true, type: "area" },
+					{ field: "bytesFont", name: "Fonts", stack: true, type: "area" },
+					{ field: "bytesFlash", name: "Flash", stack: true, type: "area" },
+					{ field: "bytesOther", name: "Other", stack: true, type: "area" },
+					{
+						axis: "PageSpeed",
+						field: "PageSpeed",
+						markers: {
+							visible: false
+						},
+						name: "PageSpeed",
+						tooltip: {
+							visible: true,
+							format: "{0}",
+							template: "#= series.name #: #= value #"
+						},
+						type: "line",
+						visibleInLegend: false
+					}
+				],
+				theme: "bootstrap",
+				valueAxes: [
+					{
+						name: "Bytes",
+						title: {
+							text: "Bytes"
+						}
+					},
+					{
+						name: "PageSpeed",
+						title: {
+							text: "PageSpeed"
+						}
+					}
+				],
+				tooltip: {
+                    format: "{0}",
+                    template: "#= series.name #: #= value # bytes",
+                    visible: true
+                }
+			});
+		};
+
+		$(document).ready(function() {
+			setTimeout(function() {
+			    createChart();
+			}, 400);
+		});
+	</script>
+</body>
+</html>

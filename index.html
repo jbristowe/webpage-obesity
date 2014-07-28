@@ -7,100 +7,21 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="description" content="Highlighting the increasing average size of webpages on the Internet.">
-	<meta http-equiv="cleartype" content="on">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	<title>Webpage Obesity</title>
-
-	<link href="//cdn.kendostatic.com/2013.2.626/styles/kendo.common.min.css" rel="stylesheet">
-	<link href="//cdn.kendostatic.com/2013.2.626/styles/kendo.dataviz.min.css" rel="stylesheet">
-	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
-
-	<style type="text/css">
-		body {
-			padding-top: 20px;
-			padding-bottom: 40px;
-		}
-
-		.k-sparkline {
-			width: 100%;
-		}
-
-		.jumbotron {
-			margin: 60px 0;
-			text-align: center;
-		}
-
-		.jumbotron h1 {
-			font-size: 72px;
-			line-height: 1;
-		}
-
-		.jumbotron .btn {
-			font-size: 21px;
-			padding: 14px 24px;
-		}
-
-		.chart-wrapper {
-			margin: 0 auto 15px auto;
-			padding: 10px;
-			-moz-box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-			-webkit-box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-			box-shadow: 0 1px 2px rgba(0,0,0,0.5);
-			border: 1px solid rgba(255,255,255,0.2);
-			-moz-border-radius: 3px;
-			-webkit-border-radius: 3px;
-			border-radius: 3px;
-			background: -moz-linear-gradient(top,  rgba(0,0,0,0.01) 0%, rgba(0,0,0,0.07) 100%);
-			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.01)), color-stop(100%,rgba(0,0,0,0.07)));
-			background: -webkit-linear-gradient(top,  rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.07) 100%);
-			background: -o-linear-gradient(top,  rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.07) 100%);
-			background: -ms-linear-gradient(top,  rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.07) 100%);
-			background: linear-gradient(to bottom,  rgba(0,0,0,0.01) 0%,rgba(0,0,0,0.07) 100%);
-		}
-	</style>
+    <meta http-equiv="cleartype" content="on">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webpage Obesity</title>
+    <link href="//cdn.kendostatic.com/2014.2.716/styles/kendo.common.min.css" rel="stylesheet">
+    <link href="//cdn.kendostatic.com/2014.2.716/styles/kendo.dataviz.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-	<div class="container">
-      <div class="jumbotron">
+    <div class="container">
+      <div class="page-header">
         <h1>Webpage Obesity</h1>
-        <p class="lead">An average webpage on the Internet based on data collected across 290,000+ URLs since November 15, 2011.</p>
+        <p class="lead">An average webpage based on 290,000+ URLs</p>
       </div>
-      <hr />
-      <div class="row-fluid">
-        <div class="span12">
-			<div class="chart-wrapper">
-				<div id="stackedAreaChart"></div>
-			</div>
-        </div>
-      </div>
-      <hr />
-      <div class="row-fluid">
-        <div class="span3">
-        	<h3>HTML</h3>
-			<div class="chart-wrapper">
-				<div id="htmlBytesSparkline"></div>
-			</div>
-        </div>
-        <div class="span3">
-        	<h3>IMAGES</h3>
-			<div class="chart-wrapper">
-				<div id="imageBytesSparkline"></div>
-			</div>
-        </div>
-        <div class="span3">
-        	<h3>JAVASCRIPT</h3>
-			<div class="chart-wrapper">
-				<div id="scriptBytesSparkline"></div>
-			</div>
-        </div>
-        <div class="span3">
-        	<h3>STYLESHEETS</h3>
-			<div class="chart-wrapper">
-				<div id="stylesheetBytesSparkline"></div>
-			</div>
-        </div>
-      </div>
+      <div id="lineChart"></div>
+      <div id="stackedAreaChart"></div>
       <hr />
       <div class="footer">
         <p>Data provided by <a href="http://www.httparchive.org/">HTTP Archive</a>. Charts generated using <a href="http://www.kendoui.com/">Kendo UI</a>. Hacked together by <a href="//twitter.com/JohnBristowe">@JohnBristowe</a>.</p>
@@ -108,285 +29,96 @@
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
-	<script src="//cdn.kendostatic.com/2013.2.626/js/kendo.all.min.js"></script>
+    <script src="//cdn.kendostatic.com/2014.2.716/js/kendo.all.min.js"></script>
     <script>window.kendo || document.write('<script src="js/kendo.all.min.js"><\/script>')</script>
-	<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
-	<script>
-		function createCharts() {
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <script>
+        function createCharts() {
 
-			var tooltipTemplate = "#= (value / 1000)|0 # KB"; 
+            var tooltipTemplate = "#= (value / 1000)|0 # KB"; 
 
-			var archiveDataSource = new kendo.data.DataSource({
-				filter: [
-					{ field: "device", operator: "eq", value: "IE8" },
-					{ field: "slice", operator: "eq", value: "All" }
-				],
-				schema: {
-					model: {
-						fields: {
-							bytesTotal: { type: "number" },
-							bytesHtml: { type: "number" },
-							bytesJS: { type: "number" },
-							bytesCSS: { type: "number" },
-							bytesGif: { type: "number" },
-							bytesJpg: { type: "number" },
-							bytesPng: { type: "number" },
-							bytesFont: { type: "number" },
-							bytesFlash: { type: "number" },
-							bytesOther: { type: "number" },
-							PageSpeed: { type: "number" }
-						}
-					}
-				},
-				sort: { dir: "asc", field: "label" },
-				transport: {
-					read: {
-						url: "httparchive.json",
-						dataType: "json"
-					}
-				}
-			});
+            var archiveDataSource = new kendo.data.DataSource({
+                schema: {
+                    model: {
+                        fields: {
+                            Date: { type: "date" },
+                            PageSpeed: { type: "number" },
+                            HTML: { type: "number" },
+                            JS: { type: "number" },
+                            CSS: { type: "number" },
+                            GIF: { type: "number" },
+                            JPEG: { type: "number" },
+                            PNG: { type: "number" },
+                            Fonts: { type: "number" },
+                            Flash: { type: "number" },
+                            Other: { type: "number" }
+                        }
+                    }
+                },
+                sort: { field: "Date" },
+                transport: {
+                    read: {
+                        url: "httparchive.json"
+                    }
+                }
+            });
 
-			$("#stackedAreaChart").kendoChart({
-				categoryAxis: {
-					axisCrossingValues: [0, 1000],
-					field: "label",
-					labels: {
-						rotation: -90,
-						visible: true
-					},
-					majorGridLines: {
+            $("#stackedAreaChart").kendoChart({
+                categoryAxis: {
+                    axisCrossingValues: [0, 1000],
+                    baseUnit: "months",
+                    field: "Date",
+                    labels: {
+                        rotation: -90,
+                        visible: true
+                    },
+                    majorGridLines: {
                         visible: false
                     }
-				},
-				chartArea: {
-					height: 600,
-					opacity: 0
-				},
-				dataSource: archiveDataSource,
-				legend: {
-					labels: {
-						color: "rgb(51, 51, 51)",
-					},
-					position: "bottom"
-				},
-				series: [
-					{ field: "bytesHtml", name: "HTML", stack: true, type: "area" },
-					{ field: "bytesJS", name: "JavaScript", stack: true, type: "area" },
-					{ field: "bytesCSS", name: "CSS", stack: true, type: "area" },
-					{ field: "bytesGif", name: "GIFs", stack: true, type: "area" },
-					{ field: "bytesJpg", name: "JPEGs", stack: true, type: "area" },
-					{ field: "bytesPng", name: "PNGs", stack: true, type: "area" },
-					{ field: "bytesFont", name: "Fonts", stack: true, type: "area" },
-					{ field: "bytesFlash", name: "Flash", stack: true, type: "area" },
-					{ field: "bytesOther", name: "Other", stack: true, type: "area" },
-					{
-						axis: "PageSpeed",
-						field: "PageSpeed",
-						markers: {
-							visible: false
-						},
-						name: "PageSpeed",
-						tooltip: {
-							visible: true,
-							format: "{0}",
-							template: "#= series.name #: #= value #"
-						},
-						type: "line",
-						visibleInLegend: false
-					}
-				],
-				theme: "bootstrap",
-				tooltip: {
+                },
+                chartArea: {
+                    height: 800
+                },
+                dataSource: archiveDataSource,
+                legend: {
+                    position: "bottom"
+                },
+                series: [
+                    { field: "HTML", name: "HTML" },
+                    { field: "JS", name: "JavaScript" },
+                    { field: "CSS", name: "CSS" },
+                    { field: "GIF", name: "GIF" },
+                    { field: "JPEG", name: "JPEG" },
+                    { field: "PNG", name: "PNG" },
+                    { field: "Fonts", name: "Fonts" },
+                    { field: "Flash", name: "Flash" },
+                    { field: "Other", name: "Other" }
+                ],
+                seriesDefaults: {
+                    stack: true,
+                    type: "area"
+                },
+                theme: "bootstrap",
+                tooltip: {
                     format: "{0}",
-					template: "#= series.name #: " + tooltipTemplate,
+                    template: "#= series.name #: " + tooltipTemplate,
                     visible: true
                 },
-				valueAxes: [
-					{
-						name: "Bytes",
-						labels: {
-		                    format: "{0}",
-							template: tooltipTemplate
-						}
-					},
-					{
-						name: "PageSpeed",
-						title: {
-							text: "PageSpeed"
-						}
-					}
-				]
-			});
+                valueAxes: [
+                    {
+                        labels: {
+                            format: "{0}",
+                            template: "#= (value / 1000000) # MB"
+                        },
+                        name: "Bytes"
+                    }
+                ]
+            });
+        };
 
-			$("#htmlBytesSparkline").kendoSparkline({
-				type: "area",
-				chartArea: {
-					height: 200,
-					opacity: 0
-				},
-				dataSource: archiveDataSource,
-				series: [
-					{ color: "#2ecc71", field: "bytesHtml", name: "HTML" },
-					{
-						axis: "Requests",
-						color: "#303030",
-						field: "reqHtml",
-						name: "Requests",
-						tooltip: {
-							visible: true,
-							format: "{0}",
-							template: "#= value #"
-						},
-						type: "line"
-					}
-				],
-				tooltip: {
-					visible: true,
-					format: "{0}",
-					template: tooltipTemplate
-				},
-				valueAxes: [
-					{
-						name: "Bytes",
-						labels: {
-		                    format: "{0}",
-							template: tooltipTemplate
-						}
-					},
-					{
-						name: "Requests"
-					}
-				]
-			});
-
-			$("#imageBytesSparkline").kendoSparkline({
-				type: "area",
-				chartArea: {
-					height: 200,
-					opacity: 0
-				},
-				dataSource: archiveDataSource,
-				series: [
-					{ color: "#3498db", field: "bytesImg", name: "Images" },
-					{
-						axis: "Requests",
-						color: "#303030",
-						field: "reqImg",
-						name: "Requests",
-						tooltip: {
-							visible: true,
-							format: "{0}",
-							template: "#= value #"
-						},
-						type: "line"
-					}
-				],
-				tooltip: {
-					visible: true,
-					format: "{0}",
-					template: tooltipTemplate
-				},
-				valueAxes: [
-					{
-						name: "Bytes",
-						labels: {
-		                    format: "{0}",
-							template: tooltipTemplate
-						}
-					},
-					{
-						name: "Requests"
-					}
-				]
-			});
-
-			$("#scriptBytesSparkline").kendoSparkline({
-				type: "area",
-				chartArea: {
-					height: 200,
-					opacity: 0
-				},
-				dataSource: archiveDataSource,
-				series: [
-					{ color: "#9b59b6", field: "bytesJS", name: "JavaScript" },
-					{
-						axis: "Requests",
-						color: "#303030",
-						field: "reqJS",
-						name: "Requests",
-						tooltip: {
-							visible: true,
-							format: "{0}",
-							template: "#= value #"
-						},
-						type: "line"
-					}
-				],
-				tooltip: {
-					visible: true,
-					format: "{0}",
-					template: tooltipTemplate
-				},
-				valueAxes: [
-					{
-						name: "Bytes",
-						labels: {
-		                    format: "{0}",
-							template: tooltipTemplate
-						}
-					},
-					{
-						name: "Requests"
-					}
-				]
-			});
-
-			$("#stylesheetBytesSparkline").kendoSparkline({
-				type: "area",
-				chartArea: {
-					height: 200,
-					opacity: 0
-				},
-				dataSource: archiveDataSource,
-				series: [
-					{ color: "#34495e", field: "bytesCSS", name: "Stylesheets" },
-					{
-						axis: "Requests",
-						color: "#303030",
-						field: "reqCSS",
-						name: "Requests",
-						tooltip: {
-							visible: true,
-							format: "{0}",
-							template: "#= value #"
-						},
-						type: "line"
-					}
-				],
-				tooltip: {
-					visible: true,
-					format: "{0}",
-					template: tooltipTemplate
-				},
-				valueAxes: [
-					{
-						name: "Bytes",
-						labels: {
-		                    format: "{0}",
-							template: tooltipTemplate
-						}
-					},
-					{
-						name: "Requests"
-					}
-				]
-			});
-		};
-
-		$(document).ready(function() {
-		    createCharts();
-		});
-	</script>
+        $(document).ready(function() {
+            createCharts();
+        });
+    </script>
 </body>
 </html>

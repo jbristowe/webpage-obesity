@@ -1,124 +1,25 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="description" content="Highlighting the increasing average size of webpages on the Internet.">
-    <meta http-equiv="cleartype" content="on">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webpage Obesity</title>
-    <link href="//cdn.kendostatic.com/2014.2.716/styles/kendo.common.min.css" rel="stylesheet">
-    <link href="//cdn.kendostatic.com/2014.2.716/styles/kendo.dataviz.min.css" rel="stylesheet">
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="description" content="Highlighting the increasing average size of webpages on the Internet." />
+  <meta http-equiv="cleartype" content="on" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Webpage Obesity</title>
+  <link href="//cdn.kendostatic.com/2014.2.716/styles/kendo.common.min.css" rel="stylesheet" />
+  <link href="//cdn.kendostatic.com/2014.2.716/styles/kendo.dataviz.min.css" rel="stylesheet" />
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="styles.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="container">
-      <div class="page-header">
-        <h1>Webpage Obesity</h1>
-        <p class="lead">An average webpage based on 290,000+ URLs</p>
-      </div>
-      <div id="lineChart"></div>
-      <div id="stackedAreaChart"></div>
-      <hr />
-      <div class="footer">
-        <p>Data provided by <a href="http://www.httparchive.org/">HTTP Archive</a>. Charts generated using <a href="http://www.kendoui.com/">Kendo UI</a>. Hacked together by <a href="//twitter.com/JohnBristowe">@JohnBristowe</a>.</p>
-      </div>
-    </div>
+  <div class="container">
+    <h1>WEBPAGE OBESITY</h1>
+    <p>Data provided by <a href="http://www.httparchive.org/">HTTP Archive</a>. Charts generated using <a href="http://www.kendoui.com/">Kendo UI</a>. Hacked together by <a href="//twitter.com/JohnBristowe">@JohnBristowe</a>.</p>
+    <hr />
+    <div id="archiveAreaChart"></div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
     <script src="//cdn.kendostatic.com/2014.2.716/js/kendo.all.min.js"></script>
-    <script>window.kendo || document.write('<script src="js/kendo.all.min.js"><\/script>')</script>
-    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
-    <script>
-        function createCharts() {
-
-            var tooltipTemplate = "#= (value / 1000)|0 # KB"; 
-
-            var archiveDataSource = new kendo.data.DataSource({
-                schema: {
-                    model: {
-                        fields: {
-                            Date: { type: "date" },
-                            PageSpeed: { type: "number" },
-                            HTML: { type: "number" },
-                            JS: { type: "number" },
-                            CSS: { type: "number" },
-                            GIF: { type: "number" },
-                            JPEG: { type: "number" },
-                            PNG: { type: "number" },
-                            Fonts: { type: "number" },
-                            Flash: { type: "number" },
-                            Other: { type: "number" }
-                        }
-                    }
-                },
-                sort: { field: "Date" },
-                transport: {
-                    read: {
-                        url: "httparchive.json"
-                    }
-                }
-            });
-
-            $("#stackedAreaChart").kendoChart({
-                categoryAxis: {
-                    axisCrossingValues: [0, 1000],
-                    baseUnit: "months",
-                    field: "Date",
-                    labels: {
-                        rotation: -90,
-                        visible: true
-                    },
-                    majorGridLines: {
-                        visible: false
-                    }
-                },
-                chartArea: {
-                    height: 800
-                },
-                dataSource: archiveDataSource,
-                legend: {
-                    position: "bottom"
-                },
-                series: [
-                    { field: "HTML", name: "HTML" },
-                    { field: "JS", name: "JavaScript" },
-                    { field: "CSS", name: "CSS" },
-                    { field: "GIF", name: "GIF" },
-                    { field: "JPEG", name: "JPEG" },
-                    { field: "PNG", name: "PNG" },
-                    { field: "Fonts", name: "Fonts" },
-                    { field: "Flash", name: "Flash" },
-                    { field: "Other", name: "Other" }
-                ],
-                seriesDefaults: {
-                    stack: true,
-                    type: "area"
-                },
-                theme: "bootstrap",
-                tooltip: {
-                    format: "{0}",
-                    template: "#= series.name #: " + tooltipTemplate,
-                    visible: true
-                },
-                valueAxes: [
-                    {
-                        labels: {
-                            format: "{0}",
-                            template: "#= (value / 1000000) # MB"
-                        },
-                        name: "Bytes"
-                    }
-                ]
-            });
-        };
-
-        $(document).ready(function() {
-            createCharts();
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>

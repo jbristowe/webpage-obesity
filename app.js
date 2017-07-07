@@ -6,7 +6,7 @@ function createCharts() {
     schema: {
       model: {
         fields: {
-          Date: { type: "date" },
+          FormattedDate: { type: "date" },
           HTML: { type: "number" },
           JS: { type: "number" },
           CSS: { type: "number" },
@@ -15,12 +15,11 @@ function createCharts() {
           PNG: { type: "number" },
           Fonts: { type: "number" },
           Flash: { type: "number" },
-          Other: { type: "number" },
-          PageSpeed: { type: "number" }
+          Other: { type: "number" }
         }
       }
     },
-    sort: { field: "Date" },
+    sort: { field: "FormattedDate" },
     transport: {
       read: {
         url: "httparchive.json"
@@ -32,15 +31,14 @@ function createCharts() {
     categoryAxis: {
       axisCrossingValues: [0, 1000],
       baseUnit: "months",
-      field: "Date",
-      labels: {
-        rotation: -90,
+      crosshair: {
         visible: true
       },
+      field: "FormattedDate",
+      labels: {
+        rotation: -30
+      },
       majorGridLines: { visible: false }
-    },
-    chartArea: {
-      height: 600
     },
     dataSource: archiveDataSource,
     series: [
@@ -52,51 +50,54 @@ function createCharts() {
       { field: "PNG", name: "PNG" },
       { field: "Fonts", name: "Fonts" },
       { field: "Flash", name: "Flash" },
-      { field: "Other", name: "Other" },
-      {
-        axis: "PageSpeed",
-        field: "PageSpeed",
-        markers: { visible: false },
-        name: "PageSpeed",
-        tooltip: {
-          format: "{0}",
-          template: "#= series.name #: #= value #",
-          visible: true
-        },
-        type: "line",
-        visibleInLegend: false
-      }
+      { field: "Other", name: "Other" }
     ],
     seriesDefaults: {
       area: {
         line: { style: "smooth" }
       },
       stack: true,
+      missingValues: "interpolate",
       type: "area"
     },
     theme: "bootstrap",
     tooltip: {
-      format: "{0}",
-      template: "#= series.name #: " + tooltipTemplate,
+      shared: true,
+      template: tooltipTemplate,
       visible: true
     },
-    valueAxes: [
-      {
-        labels: {
-          format: "{0}",
-          template: "#= (value / 1000000) # MB"
-        },
-        name: "Bytes"
+    valueAxes: [{
+      majorGridLines: { visible: false },
+      majorTicks: { skip: 1 },
+      labels: {
+        format: "{0}",
+        skip: 1,
+        template: "#= (value / 1000000) # MB"
       },
-      {
-        name: "PageSpeed",
-        labels: {
-          visible: false
-        }
-      }]
+      name: "Bytes"
+    }]
   });
 };
 
 $(document).ready(function() {
   createCharts();
+});
+
+$(window).on("resize", function () {
+    var windowWidth = $(window).width(),
+        chart = $("#archiveAreaChart").data("kendoChart");
+
+    if (windowWidth <= 320) {
+      chart.setOptions({ categoryAxis: { labels: { step: 16 } } });
+    } else if (windowWidth <= 480) {
+      chart.setOptions({ categoryAxis: { labels: { step: 8 } } });
+    } else if (windowWidth <= 960) {
+      chart.setOptions({ categoryAxis: { labels: { step: 4 } } });
+    } else if (windowWidth <= 2000) {
+      chart.setOptions({ categoryAxis: { labels: { step: 2 } } });
+    } else {
+      chart.setOptions({ categoryAxis: { labels: { step: 1 } } });
+    }
+
+    chart.resize();
 });
